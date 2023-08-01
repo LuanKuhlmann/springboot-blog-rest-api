@@ -2,6 +2,7 @@ package io.github.luankuhlmann.springbootblogrestapi.service.impl;
 
 import io.github.luankuhlmann.springbootblogrestapi.dto.PostDto;
 import io.github.luankuhlmann.springbootblogrestapi.entity.Post;
+import io.github.luankuhlmann.springbootblogrestapi.exception.ResourceNotFoundException;
 import io.github.luankuhlmann.springbootblogrestapi.repository.PostRepository;
 import io.github.luankuhlmann.springbootblogrestapi.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +61,13 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postRepository.findAll();
 
         return posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
+    }
+
+    @Override
+    public PostDto getPostById(long id) {
+
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+
+        return mapToDTO(post);
     }
 }
