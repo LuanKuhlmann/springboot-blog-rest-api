@@ -21,7 +21,7 @@ public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
 
-    @Autowired
+    //@Autowired not needed because repository have only one constructor
     public PostServiceImpl(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
