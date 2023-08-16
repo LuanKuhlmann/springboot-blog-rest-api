@@ -1,5 +1,6 @@
 package io.github.luankuhlmann.springbootblogrestapi.controller;
 
+import io.github.luankuhlmann.springbootblogrestapi.dto.JWTAuthResponse;
 import io.github.luankuhlmann.springbootblogrestapi.dto.LoginDto;
 import io.github.luankuhlmann.springbootblogrestapi.dto.RegisterDto;
 import io.github.luankuhlmann.springbootblogrestapi.service.AuthService;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private AuthService authService;
+    private final AuthService authService;
 
     @Autowired
     public AuthController(AuthService authService) {
@@ -24,15 +25,19 @@ public class AuthController {
 
     // Build Login REST API
     @PostMapping(value = {"/login", "/signin"})
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-        String response = authService.login(loginDto);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<JWTAuthResponse> login(@RequestBody LoginDto loginDto) {
+        String token = authService.login(loginDto);
+
+        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
+        jwtAuthResponse.setAccessToken(token);
+
+        return ResponseEntity.ok(jwtAuthResponse);
     }
 
     // Build Register REST API
     @PostMapping(value = {"/register", "/signup"})
     public ResponseEntity<String> register(RegisterDto registerDto) {
-        String responce = authService.register(registerDto);
-        return new ResponseEntity<>(responce, HttpStatus.CREATED);
+        String response = authService.register(registerDto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }
