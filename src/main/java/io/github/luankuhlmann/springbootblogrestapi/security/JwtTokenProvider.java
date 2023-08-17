@@ -19,7 +19,7 @@ public class JwtTokenProvider {
     private String jwtSecret;
 
     @Value("${app-jwt-expiration-milliseconds}")
-    private String jwtExpirationDate;
+    private long jwtExpirationDate;
 
     // generate JWT token
     public String generateToken(Authentication authentication) {
@@ -27,14 +27,12 @@ public class JwtTokenProvider {
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
                 .signWith(key())
                 .compact();
-
-        return token;
     }
 
     private Key key() {
@@ -50,8 +48,7 @@ public class JwtTokenProvider {
                 .parseClaimsJwt(token)
                 .getBody();
 
-        String username = claims.getSubject();
-        return username;
+        return claims.getSubject();
     }
 
     // validate Jet token
@@ -61,7 +58,6 @@ public class JwtTokenProvider {
                     .setSigningKey(key())
                     .build()
                     .parse(token);
-
             return true;
         } catch (MalformedJwtException ex) {
             throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Invalid JWT token");
