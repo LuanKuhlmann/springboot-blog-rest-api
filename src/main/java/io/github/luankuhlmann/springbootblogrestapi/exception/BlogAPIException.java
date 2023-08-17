@@ -21,4 +21,9 @@ public class BlogAPIException extends RuntimeException {
     public HttpStatus getStatus() {
         return status;
     }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }
